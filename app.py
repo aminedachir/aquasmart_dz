@@ -22,8 +22,11 @@ app.config["SECRET_KEY"] = "change-me-in-production"
 database_url = os.environ.get("DATABASE_URL", "sqlite:///aquasmart.db")
 
 # إصلاح البادئة لتتوافق مع SQLAlchemy (Vercel يعطي postgres:// وليس postgresql://)
+# إصلاح البادئة لتتوافق مع SQLAlchemy واستخدام psycopg3
 if database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
+    database_url = database_url.replace("postgres://", "postgresql+psycopg://", 1)
+elif database_url.startswith("postgresql://"):
+    database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 
