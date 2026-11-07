@@ -1,0 +1,64 @@
+{% extends 'base.html' %}{% block title %}الرئيسية{% endblock %}
+{% block content %}
+
+<!-- قسم الترحيب (Hero) -->
+<section class="rounded-[2rem] overflow-hidden text-white p-6 shadow-soft relative animate__animated animate__fadeInDown"
+ style="background:linear-gradient(135deg, rgba(11,79,108,0.95), rgba(46,139,87,0.85)),url('{{ url_for('static', filename='images/hero.jpg') }}') center/cover">
+  <div class="relative z-10">
+    <p class="text-mint text-xs font-extrabold tracking-wider mb-1">من الجزائر لأجل غدٍ أفضل 🇩🇿</p>
+    <h2 class="text-3xl font-black mt-1 leading-tight">أهلاً {{ current_user.full_name.split()[0] }} 👋</h2>
+    <p class="text-sm text-white/80 mt-3 leading-relaxed max-w-[80%]">الأكوابونيك المستدام من أجل غذاء المستقبل: أسماك بمياه نظيفة وخضروات بمغذيات طبيعية.</p>
+  </div>
+  <i class="fa-solid fa-fish absolute -bottom-6 -left-6 text-9xl text-white/10 rotate-12"></i>
+</section>
+
+<!-- المنتجات المميزة -->
+<div class="flex items-center justify-between mt-8 mb-4 px-1">
+  <h2 class="font-extrabold text-ocean text-lg">المنتجات المميزة</h2>
+  <a href="{{ url_for('products') }}" class="text-xs font-bold text-leaf bg-leaf/10 px-3 py-1.5 rounded-full">عرض الكل <i class="fa-solid fa-arrow-left mr-1 text-[10px]"></i></a>
+</div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 pb-4">
+{% for p in products %}
+  <div class="w-44 shrink-0 snap-start bg-white rounded-[1.5rem] shadow-soft overflow-hidden border border-slate-100/50 transition-transform hover:scale-[1.02]">
+    <div class="relative h-32">
+      <img src="{{ p.image_url }}" class="w-full h-full object-cover" alt="">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+    </div>
+    <div class="p-3 relative -mt-4 bg-white rounded-t-[1.5rem]">
+      <h3 class="font-extrabold text-sm truncate text-ocean">{{ p.name }}</h3>
+      <div class="flex items-center justify-between mt-2">
+        <span class="font-black text-leaf text-sm">{{ '%g' % p.price }} <span class="text-[10px]">د.ج</span></span>
+        <form method="post" action="{{ url_for('cart_add', kind='p', item_id=p.id) }}">
+          <button class="h-8 w-8 rounded-full bg-ocean text-white shadow-md active:scale-90 transition flex items-center justify-center"><i class="fa-solid fa-plus text-xs"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>{% endfor %}
+</div>
+
+<!-- الورشات الجديدة -->
+<div class="flex items-center justify-between mt-6 mb-4 px-1">
+  <h2 class="font-extrabold text-ocean text-lg">ورشات جديدة</h2>
+  <a href="{{ url_for('workshops') }}" class="text-xs font-bold text-leaf bg-leaf/10 px-3 py-1.5 rounded-full">عرض الكل <i class="fa-solid fa-arrow-left mr-1 text-[10px]"></i></a>
+</div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 pb-4">
+{% for w in workshops %}
+  <div class="w-64 shrink-0 snap-start bg-white rounded-[1.5rem] shadow-soft overflow-hidden border border-slate-100/50 transition-transform hover:scale-[1.02]">
+    <div class="relative h-32">
+      <img src="{{ w.image_url }}" class="w-full h-full object-cover" alt="">
+      <span class="absolute top-3 right-3 bg-white/90 backdrop-blur text-ocean text-[10px] font-extrabold px-2 py-1 rounded-lg shadow-sm">
+        <i class="fa-regular fa-calendar ml-1"></i>{{ w.date.strftime('%m/%d') if w.date }}
+      </span>
+    </div>
+    <div class="p-4">
+      <h3 class="font-extrabold text-sm truncate text-ocean">{{ w.title }}</h3>
+      <div class="flex items-center justify-between mt-3">
+        <span class="font-black text-leaf text-sm">{{ '%g' % w.price }} <span class="text-[10px]">د.ج</span></span>
+        <form method="post" action="{{ url_for('cart_add', kind='w', item_id=w.id) }}">
+          <button class="px-4 py-1.5 rounded-xl bg-leaf text-white text-xs font-bold shadow-md active:scale-95 transition">سجّل</button>
+        </form>
+      </div>
+    </div>
+  </div>{% endfor %}
+</div>
+{% endblock %}

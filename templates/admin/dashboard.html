@@ -1,0 +1,6 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<div class="grid grid-cols-2 gap-3">{% for t,n,i,c in stats %}
+<div class="{{ c }} text-white rounded-3xl p-4 shadow"><i class="fa-solid {{ i }} text-xl opacity-80"></i><p class="text-3xl font-extrabold mt-2">{{ n }}</p><p class="text-sm opacity-90">{{ t }}</p></div>{% endfor %}</div>
+<h2 class="font-extrabold text-ocean mt-6 mb-2">آخر الطلبات</h2>
+<div class="space-y-2">{% for o in latest %}<div class="bg-white rounded-2xl p-3 shadow-sm flex justify-between text-sm"><div><b>#{{ o.id }} — {{ o.user.name }}</b><p class="text-xs text-slate-500">{{ o.status }}</p></div><b class="text-ocean">{{ '%g' % o.total }} د.ج</b></div>
+{% else %}<p class="text-sm text-slate-500">لا توجد طلبات.</p>{% endfor %}</div>{% endblock %}

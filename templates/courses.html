@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}الدورات{% endblock %}{% block page_title %}الدورات التكوينية{% endblock %}
+{% block content %}<div class="space-y-4">
+{% for c in courses %}
+<div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+  <img src="{{ c.image_url }}" class="h-36 w-full object-cover" alt="">
+  <div class="p-4">
+    <h3 class="font-extrabold text-ocean">{{ c.title }}</h3>
+    <p class="text-sm text-slate-500 mt-1">{{ c.description }}</p>
+    <div class="flex items-center justify-between mt-3">
+      <div class="text-xs text-slate-500"><i class="fa-regular fa-clock ml-1"></i>{{ c.duration_hours }} ساعة<br><b class="text-ocean text-base">{{ '%g' % c.price }} د.ج</b></div>
+      {% if c.id in enrolled %}<span class="px-5 py-2.5 rounded-2xl bg-mint/40 text-leaf font-bold text-sm"><i class="fa-solid fa-check ml-1"></i>مسجّل</span>
+      {% else %}<form method="post" action="{{ url_for('enroll', cid=c.id) }}"><button class="px-6 py-2.5 rounded-2xl bg-leaf text-white font-extrabold text-sm shadow active:scale-95 transition">سجّل الآن</button></form>{% endif %}
+    </div>
+  </div>
+</div>{% else %}<p class="text-center text-slate-500">لا توجد دورات.</p>{% endfor %}</div>{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<h2 class="font-extrabold text-ocean mb-3"><i class="fa-solid {{ cfg.icon }} ml-2"></i>{{ cfg.title }}</h2>
+<div class="space-y-3">{% for it in items %}
+<div class="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-3">
+  <img src="{{ it.image_url }}" class="h-14 w-14 rounded-xl object-cover bg-slate-100" alt="">
+  <div class="flex-1 min-w-0"><p class="font-extrabold text-sm truncate">{{ it[cfg.name] }}</p><p class="text-xs text-slate-500">{{ cfg.sub(it) }}</p></div>
+  <a href="{{ url_for('admin_form', entity=entity, iid=it.id) }}" class="h-10 w-10 grid place-items-center rounded-full bg-mint/40 text-ocean"><i class="fa-solid fa-pen"></i></a>
+  <form method="post" action="{{ url_for('admin_delete', entity=entity, iid=it.id) }}" onsubmit="return confirm('هل أنت متأكد من الحذف؟')"><button class="h-10 w-10 rounded-full bg-red-50 text-red-500"><i class="fa-solid fa-trash"></i></button></form>
+</div>{% else %}<p class="text-sm text-slate-500">لا توجد بيانات.</p>{% endfor %}</div>
+<div class="sticky bottom-24 flex justify-end mt-4"><a href="{{ url_for('admin_form', entity=entity) }}" class="h-14 w-14 rounded-full bg-leaf text-white grid place-items-center shadow-xl text-xl active:scale-90 transition"><i class="fa-solid fa-plus"></i></a></div>
+{% endblock %}

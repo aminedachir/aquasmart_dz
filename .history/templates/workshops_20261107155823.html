@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}الدورات{% endblock %}{% block page_title %}الدورات والورشات{% endblock %}
+{% block content %}<div class="space-y-4">
+{% for w in workshops %}
+<div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+  <img src="{{ w.image_url }}" class="h-36 w-full object-cover" alt="">
+  <div class="p-4">
+    <h3 class="font-extrabold text-ocean">{{ w.title }}</h3>
+    <p class="text-sm text-slate-500 mt-1">{{ w.description }}</p>
+    <div class="flex items-center justify-between mt-3">
+      <div class="text-xs text-slate-500"><i class="fa-regular fa-calendar ml-1"></i>{{ w.date.strftime('%Y-%m-%d') if w.date }}<br><b class="text-ocean text-base">{{ '%g' % w.price }} د.ج</b></div>
+      {% if 'w:%d'|format(w.id) in in_cart %}<a href="{{ url_for('cart') }}" class="px-5 py-2.5 rounded-2xl bg-mint/40 text-leaf font-bold text-sm"><i class="fa-solid fa-check ml-1"></i>في السلة</a>
+      {% else %}<form method="post" action="{{ url_for('cart_add', kind='w', item_id=w.id) }}"><button class="px-6 py-2.5 rounded-2xl bg-leaf text-white font-extrabold text-sm shadow active:scale-95 transition">سجّل الآن</button></form>{% endif %}
+    </div>
+  </div>
+</div>{% else %}<p class="text-center text-slate-500">لا توجد ورشات.</p>{% endfor %}</div>{% endblock %}

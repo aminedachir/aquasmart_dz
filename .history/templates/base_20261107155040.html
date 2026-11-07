@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+{% include '_head.html' %}
+<title>{% block title %}AquaSmart DZ{% endblock %}</title>
+</head>
+<body class="bg-[#DCE6E3] font-sans text-slate-800">
+
+{# صفحات المصادقة (دخول/تسجيل) لا تعرض الترويسة ولا الشريط السفلي. الشاشة الافتتاحية صفحة مستقلة (splash.html) #}
+{% set auth_page = request.endpoint in ['login', 'signup'] %}
+
+<div class="relative max-w-[480px] mx-auto min-h-screen bg-app shadow-2xl">
+
+  {% if not auth_page %}
+  <header class="sticky top-0 z-30 bg-ocean text-white px-4 h-14 flex items-center justify-between rounded-b-3xl shadow-md">
+    <div class="flex items-center gap-2">
+      {% block back %}{% endblock %}
+      <h1 class="font-extrabold text-lg">{% block page_title %}AquaSmart DZ{% endblock %}</h1>
+    </div>
+    <a href="{{ url_for('cart') }}" class="relative h-9 w-9 grid place-items-center rounded-full bg-white/15 active:scale-90 transition">
+      <i class="fa-solid fa-cart-shopping text-sm"></i>
+      {% if cart_count %}<span class="absolute -top-1 -left-1 bg-mint text-ocean text-[10px] font-bold rounded-full h-4 min-w-4 px-1 grid place-items-center">{{ cart_count }}</span>{% endif %}
+    </a>
+  </header>
+  {% endif %}
+
+  {% set msgs = get_flashed_messages(with_categories=true) %}
+  {% if msgs %}
+  <div x-data="{o:true}" x-init="setTimeout(()=>o=false,3000)" x-show="o" x-transition class="fixed top-4 inset-x-0 mx-auto max-w-[480px] z-50 px-4 space-y-2">
+    {% for cat,m in msgs %}<div class="rounded-2xl px-4 py-3 text-sm font-bold shadow-lg {{ 'bg-red-500 text-white' if cat=='error' else 'bg-leaf text-white' }}">{{ m }}</div>{% endfor %}
+  </div>{% endif %}
+
+  <main class="px-4 pt-5 {{ 'pb-8' if auth_page else 'pb-28' }}">{% block content %}{% endblock %}</main>
+
+  {# الشريط السفلي: فقط للمستخدم المسجّل وخارج صفحات المصادقة #}
+  {% if current_user.is_authenticated and not auth_page %}
+  <nav class="fixed bottom-0 inset-x-0 mx-auto max-w-[480px] z-40 bg-white rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,.08)] pb-safe">
+    <div class="grid grid-cols-4 h-16">
+      {% set ep = request.endpoint or '' %}
+      {% for e, group, icon, label in [
+        ('home', ['home'], 'fa-house', 'الرئيسية'),
+        ('products', ['products','cart'], 'fa-basket-shopping', 'المنتجات'),
+        ('courses', ['courses'], 'fa-graduation-cap', 'الدورات'),
+        ('account', ['account','admin_dashboard','admin_list','admin_form','admin_users','admin_orders'], 'fa-user', 'حسابي')] %}
+      <a href="{{ url_for(e) }}" class="flex flex-col items-center justify-center gap-0.5 text-xs font-bold transition {{ 'text-leaf' if ep in group else 'text-slate-400' }}">
+        <span class="h-8 w-12 grid place-items-center rounded-full {{ 'bg-mint/40' if ep in group }}"><i class="fa-solid {{ icon }} text-lg"></i></span>{{ label }}
+      </a>{% endfor %}
+    </div>
+  </nav>
+  {% endif %}
+</div>
+<script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'))}</script>
+</body></html>

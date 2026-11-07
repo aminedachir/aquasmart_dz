@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block title %}لوحة التحكم{% endblock %}{% block page_title %}لوحة التحكم{% endblock %}
+{% block content %}
+{# تبويبات أفقية قابلة للتمرير #}
+<div class="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 pb-3">
+{% for ep,kw,t in [('admin_dashboard',{},'الرئيسية'),('admin_users',{},'المستخدمون'),('admin_crud',{'entity':'products'},'المنتجات'),('admin_crud',{'entity':'workshops'},'الورشات'),('admin_orders',{},'الطلبات')] %}
+<a href="{{ url_for(ep, **kw) }}" class="shrink-0 px-4 py-2 rounded-full text-sm font-bold {{ 'bg-ocean text-white' if request.path==url_for(ep, **kw) else 'bg-white text-ocean shadow-sm' }}">{{ t }}</a>{% endfor %}</div>
+{% block admin %}{% endblock %}
+{% endblock %}

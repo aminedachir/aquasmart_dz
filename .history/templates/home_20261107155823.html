@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% block title %}الرئيسية{% endblock %}
+{% block content %}
+<section class="rounded-3xl overflow-hidden text-white p-6 shadow-lg relative"
+ style="background:linear-gradient(135deg,rgba(11,79,108,.93),rgba(46,139,87,.85)),url('{{ url_for('static', filename='images/hero.jpg') }}') center/cover">
+  <p class="text-mint text-sm font-bold">من الجزائر لأجل غدٍ أفضل 🇩🇿</p>
+  <h2 class="text-2xl font-extrabold mt-1 leading-snug">أهلاً {{ current_user.name.split()[0] }} 👋</h2>
+  <p class="text-sm opacity-90 mt-2">الأكوابونيك المستدام من أجل غذاء المستقبل: أسماك بمياه نظيفة وخضروات بمغذيات طبيعية.</p>
+  <i class="fa-solid fa-fish absolute -bottom-3 -left-2 text-7xl opacity-10"></i>
+</section>
+
+<div class="flex items-center justify-between mt-6 mb-3"><h2 class="font-extrabold text-ocean">المنتجات المميزة</h2>
+<a href="{{ url_for('products') }}" class="text-xs font-bold text-leaf">عرض الكل</a></div>
+<div class="flex gap-3 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 pb-2">
+{% for p in products %}
+  <div class="w-40 shrink-0 snap-start bg-white rounded-3xl shadow-sm overflow-hidden">
+    <img src="{{ p.image_url }}" class="h-28 w-full object-cover" alt="">
+    <div class="p-3"><h3 class="font-extrabold text-sm truncate">{{ p.name }}</h3>
+      <div class="flex items-center justify-between mt-2"><span class="font-extrabold text-ocean text-sm">{{ '%g' % p.price }} د.ج</span>
+      <form method="post" action="{{ url_for('cart_add', kind='p', item_id=p.id) }}"><button class="h-9 w-9 rounded-full bg-leaf text-white shadow active:scale-90 transition"><i class="fa-solid fa-cart-plus text-sm"></i></button></form></div></div>
+  </div>{% endfor %}
+</div>
+
+<div class="flex items-center justify-between mt-6 mb-3"><h2 class="font-extrabold text-ocean">ورشات جديدة</h2>
+<a href="{{ url_for('workshops') }}" class="text-xs font-bold text-leaf">عرض الكل</a></div>
+<div class="flex gap-3 overflow-x-auto no-scrollbar snap-x -mx-4 px-4 pb-2">
+{% for w in workshops %}
+  <div class="w-56 shrink-0 snap-start bg-white rounded-3xl shadow-sm overflow-hidden">
+    <img src="{{ w.image_url }}" class="h-28 w-full object-cover" alt="">
+    <div class="p-3"><h3 class="font-extrabold text-sm truncate">{{ w.title }}</h3>
+      <p class="text-xs text-slate-500 mt-0.5"><i class="fa-regular fa-calendar ml-1"></i>{{ w.date.strftime('%Y-%m-%d') if w.date }}</p>
+      <div class="flex items-center justify-between mt-2"><span class="font-extrabold text-ocean text-sm">{{ '%g' % w.price }} د.ج</span>
+      <form method="post" action="{{ url_for('cart_add', kind='w', item_id=w.id) }}"><button class="px-4 py-2 rounded-xl bg-ocean text-white text-xs font-bold active:scale-95 transition">سجّل</button></form></div></div>
+  </div>{% endfor %}
+</div>
+{% endblock %}

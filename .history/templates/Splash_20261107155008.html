@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+{% include '_head.html' %}
+<title>AquaSmart DZ</title>
+<!-- احتياطي إن كانت JavaScript معطّلة -->
+<noscript><meta http-equiv="refresh" content="3;url={{ target }}"></noscript>
+</head>
+<body class="bg-ocean font-sans text-white">
+<!-- الشاشة الافتتاحية: المسار / (عام) -->
+<main id="splash" class="min-h-screen max-w-[480px] mx-auto flex flex-col items-center justify-center text-center px-6 transition-opacity duration-700">
+  <img src="{{ url_for('static', filename='images/logo.png') }}"
+       onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/logo.svg') }}'"
+       class="w-44 h-44 rounded-full bg-white p-2 shadow-2xl" alt="AquaSmart DZ">
+  <h1 class="mt-6 text-3xl font-extrabold tracking-wide">AquaSmart DZ</h1>
+  <p class="mt-1 text-mint text-sm">الأكوابونيك المستدام من أجل غذاء المستقبل</p>
+  <div class="spinner mt-10 h-9 w-9 rounded-full border-4 border-white/30 border-t-mint"></div>
+</main>
+<script>
+  // بعد 2.5 ثانية: /home إن كانت الجلسة قائمة، وإلا /login (يحدده الخادم في target)
+  setTimeout(function () {
+    document.getElementById('splash').style.opacity = 0;      // تلاشٍ ناعم
+    setTimeout(function () { location.replace("{{ target }}"); }, 400);
+  }, 2500);
+</script>
+</body></html>

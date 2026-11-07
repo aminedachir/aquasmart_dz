@@ -1,0 +1,8 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<h2 class="font-extrabold text-ocean mb-3">{{ 'تعديل' if item else 'إضافة' }} — {{ cfg.title }}</h2>
+<form method="post" class="space-y-3">
+{% for f,l,k in cfg.fields %}<label class="block"><span class="text-sm font-bold text-ocean">{{ l }}</span>
+{% if k=='textarea' %}<textarea name="{{ f }}" rows="4" class="mt-1 w-full rounded-2xl bg-white border border-slate-200 px-4 py-3">{{ item[f] if item }}</textarea>
+{% else %}<input name="{{ f }}" type="{{ k }}" step="any" value="{{ item[f] if item }}" {{ 'required' if loop.first }} class="mt-1 w-full h-14 rounded-2xl bg-white border border-slate-200 px-4">{% endif %}</label>{% endfor %}
+<button class="w-full h-14 rounded-2xl bg-leaf text-white font-extrabold shadow active:scale-95 transition">حفظ</button>
+<a href="{{ url_for('admin_list', entity=entity) }}" class="block text-center py-3 rounded-2xl bg-white font-bold text-slate-500">إلغاء</a></form>{% endblock %}

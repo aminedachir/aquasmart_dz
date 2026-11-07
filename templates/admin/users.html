@@ -1,0 +1,6 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<h2 class="font-extrabold text-ocean mb-3"><i class="fa-solid fa-users ml-2"></i>الحسابات ({{ users|length }})</h2>
+<div class="space-y-2">{% for u in users %}<div class="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-3">
+<div class="h-11 w-11 rounded-full bg-gradient-to-br from-ocean to-leaf text-white grid place-items-center font-extrabold">{{ u.name[0] }}</div>
+<div class="flex-1 min-w-0"><p class="font-extrabold text-sm">{{ u.name }}</p><p class="text-xs text-slate-500 truncate">{{ u.email }}</p></div>
+<span class="text-xs font-bold px-3 py-1 rounded-full {{ 'bg-ocean text-white' if u.is_admin else 'bg-slate-100 text-slate-500' }}">{{ 'مدير' if u.is_admin else 'مستخدم' }}</span></div>{% endfor %}</div>{% endblock %}

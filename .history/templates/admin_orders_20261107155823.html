@@ -1,0 +1,14 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<h2 class="font-extrabold text-ocean mb-3"><i class="fa-solid fa-basket-shopping ml-2"></i>الطلبات ({{ orders|length }})</h2>
+<div class="space-y-3">{% for o in orders %}<div class="bg-white rounded-2xl p-4 shadow-sm text-sm">
+  <div class="flex justify-between font-extrabold"><span>#{{ o.id }} — {{ o.user.name }}</span><span class="text-ocean">{{ '%g' % o.total_price }} د.ج</span></div>
+  <p class="text-[11px] text-slate-400">{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+  <ul class="mt-2 space-y-1 text-xs text-slate-600">{% for it in o.items %}<li>• {{ it.kind_ar }}: {{ it.name }} × {{ it.quantity }}</li>{% endfor %}</ul>
+  <div class="flex gap-2 mt-3">
+    <form method="post" action="{{ url_for('admin_order_status', oid=o.id) }}" class="flex flex-1 gap-2">
+      <select name="status" class="flex-1 h-11 rounded-xl border border-slate-200 bg-white px-2">
+        <option value="Pending" {{ 'selected' if o.status=='Pending' }}>قيد الانتظار</option><option value="Completed" {{ 'selected' if o.status=='Completed' }}>مكتمل</option></select>
+      <button class="px-4 rounded-xl bg-leaf text-white font-bold">حفظ</button></form>
+    <form method="post" action="{{ url_for('admin_order_delete', oid=o.id) }}" onsubmit="return confirm('حذف الطلب نهائياً؟')"><button class="h-11 w-11 rounded-xl bg-red-50 text-red-500"><i class="fa-solid fa-trash"></i></button></form>
+  </div>
+</div>{% else %}<p class="text-sm text-slate-500">لا توجد طلبات.</p>{% endfor %}</div>{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}{% block title %}الدورات{% endblock %}{% block page_title %}الدورات والورشات{% endblock %}
+{% block content %}
+
+<!-- شريط البحث والتصفية -->
+<div class="bg-white rounded-3xl p-3 shadow-sm mb-4">
+  <form method="GET" action="{{ url_for('workshops') }}" class="flex flex-col gap-3">
+    <!-- حقل البحث -->
+    <div class="relative">
+      <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input type="text" name="q" value="{{ search_query }}" placeholder="ابحث عن ورشة..." 
+             class="w-full h-12 rounded-2xl bg-slate-50 border border-slate-200 pr-12 pl-4 text-sm focus:outline-none focus:ring-2 focus:ring-leaf">
+    </div>
+    
+    <!-- أزرار التصفية -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar">
+      <button type="submit" name="sort" value="date_asc" 
+              class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition {{ 'bg-ocean text-white shadow' if sort_by=='date_asc' else 'bg-slate-100 text-slate-600' }}">
+        <i class="fa-solid fa-calendar ml-1"></i>الأقرب
+      </button>
+      <button type="submit" name="sort" value="price_asc" 
+              class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition {{ 'bg-ocean text-white shadow' if sort_by=='price_asc' else 'bg-slate-100 text-slate-600' }}">
+        <i class="fa-solid fa-arrow-up-wide-short ml-1"></i>الأرخص
+      </button>
+      <button type="submit" name="sort" value="price_desc" 
+              class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition {{ 'bg-ocean text-white shadow' if sort_by=='price_desc' else 'bg-slate-100 text-slate-600' }}">
+        <i class="fa-solid fa-arrow-down-wide-short ml-1"></i>الأغلى
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- قائمة الورشات -->
+<div class="space-y-4">
+{% for w in workshops %}
+<div class="bg-white rounded-3xl shadow-sm overflow-hidden">
+  <img src="{{ w.image_url }}" class="h-36 w-full object-cover" alt="">
+  <div class="p-4">
+    <h3 class="font-extrabold text-ocean">{{ w.title }}</h3>
+    <p class="text-sm text-slate-500 mt-1">{{ w.description }}</p>
+    <div class="flex items-center justify-between mt-3">
+      <div class="text-xs text-slate-500"><i class="fa-regular fa-calendar ml-1"></i>{{ w.date.strftime('%Y-%m-%d') if w.date }}<br><b class="text-ocean text-base">{{ '%g' % w.price }} د.ج</b></div>
+      {% if 'w:%d'|format(w.id) in in_cart %}<a href="{{ url_for('cart') }}" class="px-5 py-2.5 rounded-2xl bg-mint/40 text-leaf font-bold text-sm"><i class="fa-solid fa-check ml-1"></i>في السلة</a>
+      {% else %}<form method="post" action="{{ url_for('cart_add', kind='w', item_id=w.id) }}"><button class="px-6 py-2.5 rounded-2xl bg-leaf text-white font-extrabold text-sm shadow active:scale-95 transition">سجّل الآن</button></form>{% endif %}
+    </div>
+  </div>
+</div>
+{% else %}
+  <div class="text-center text-slate-500 py-10">
+    <i class="fa-solid fa-graduation-cap text-4xl text-slate-300 mb-3"></i>
+    <p>لا توجد ورشات تطابق بحثك.</p>
+    <a href="{{ url_for('workshops') }}" class="inline-block mt-3 text-leaf font-bold text-sm">مسح البحث</a>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

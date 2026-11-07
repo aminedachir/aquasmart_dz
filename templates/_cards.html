@@ -1,0 +1,13 @@
+{% macro product_card(p) %}
+<div class="bg-white rounded-3xl shadow-sm overflow-hidden active:scale-[.98] transition">
+  <img src="{{ p.image_url }}" alt="{{ p.name }}" class="h-28 w-full object-cover">
+  <div class="p-3">
+    <span class="text-[10px] font-bold text-leaf">{{ p.category }}</span>
+    <h3 class="font-extrabold text-sm leading-tight truncate">{{ p.name }}</h3>
+    <div class="flex items-center justify-between mt-2">
+      <span class="font-extrabold text-ocean text-sm">{{ '%g' % p.price }} د.ج</span>
+      <form method="post" action="{{ url_for('cart_add', pid=p.id) }}" @click.stop>
+        <button class="h-9 w-9 rounded-full bg-leaf text-white shadow active:scale-90 transition"><i class="fa-solid fa-cart-plus text-sm"></i></button></form>
+    </div>
+  </div>
+</div>{% endmacro %}

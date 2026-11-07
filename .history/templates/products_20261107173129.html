@@ -1,0 +1,52 @@
+{% extends 'base.html' %}{% block title %}المنتجات{% endblock %}{% block page_title %}المنتجات{% endblock %}
+{% block content %}
+
+<!-- شريط البحث والتصفية -->
+<div class="bg-white rounded-3xl p-3 shadow-sm mb-4">
+  <form method="GET" action="{{ url_for('products') }}" class="flex flex-col gap-3">
+    <!-- حقل البحث -->
+    <div class="relative">
+      <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input type="text" name="q" value="{{ search_query }}" placeholder="ابحث عن منتج..." 
+             class="w-full h-12 rounded-2xl bg-slate-50 border border-slate-200 pr-12 pl-4 text-sm focus:outline-none focus:ring-2 focus:ring-leaf">
+    </div>
+    
+    <!-- أزرار التصفية -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar">
+      <button type="submit" name="sort" value="newest" 
+              class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition {{ 'bg-ocean text-white shadow' if sort_by=='newest' else 'bg-slate-100 text-slate-600' }}">
+        <i class="fa-solid fa-clock ml-1"></i>الأحدث
+      </button>
+      <button type="submit" name="sort" value="price_asc" 
+              class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition {{ 'bg-ocean text-white shadow' if sort_by=='price_asc' else 'bg-slate-100 text-slate-600' }}">
+        <i class="fa-solid fa-arrow-up-wide-short ml-1"></i>الأرخص
+      </button>
+      <button type="submit" name="sort" value="price_desc" 
+              class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition {{ 'bg-ocean text-white shadow' if sort_by=='price_desc' else 'bg-slate-100 text-slate-600' }}">
+        <i class="fa-solid fa-arrow-down-wide-short ml-1"></i>الأغلى
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- شبكة المنتجات -->
+<div class="grid grid-cols-2 gap-3">
+{% for p in products %}
+  <div class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col">
+    <img src="{{ p.image_url }}" class="h-28 w-full object-cover" alt="">
+    <div class="p-3 flex-1 flex flex-col">
+      <h3 class="font-extrabold text-sm leading-tight">{{ p.name }}</h3>
+      <p class="text-[11px] text-slate-500 mt-1 flex-1 line-clamp-2">{{ p.description }}</p>
+      <div class="flex items-center justify-between mt-2"><span class="font-extrabold text-ocean text-sm">{{ '%g' % p.price }} د.ج</span>
+      <form method="post" action="{{ url_for('cart_add', kind='p', item_id=p.id) }}"><button class="h-9 px-3 rounded-full bg-leaf text-white text-xs font-bold shadow active:scale-90 transition"><i class="fa-solid fa-cart-plus ml-1"></i>أضف</button></form></div>
+    </div>
+  </div>
+{% else %}
+  <div class="col-span-2 text-center text-slate-500 py-10">
+    <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
+    <p>لا توجد منتجات تطابق بحثك.</p>
+    <a href="{{ url_for('products') }}" class="inline-block mt-3 text-leaf font-bold text-sm">مسح البحث</a>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}{% block title %}تسجيل الدخول{% endblock %}
+{% block content %}
+<div class="min-h-[88vh] flex flex-col justify-center">
+  <div class="text-center mb-7">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/logo.svg') }}'" class="h-24 w-24 mx-auto rounded-full shadow-lg bg-white p-1" alt="">
+    <h1 class="text-2xl font-extrabold text-ocean mt-4">مرحباً بعودتك 👋</h1>
+    <p class="text-sm text-slate-500">سجّل الدخول للمتابعة إلى AquaSmart DZ</p>
+  </div>
+  <form method="post" class="space-y-4" x-data="{show:false}">
+    <label class="block"><span class="text-sm font-bold text-ocean">البريد الإلكتروني</span>
+      <div class="mt-1 relative"><i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="email" type="email" required autocomplete="email" class="w-full h-14 rounded-2xl bg-white border border-slate-200 pr-12 pl-4 text-base focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+    <label class="block"><span class="text-sm font-bold text-ocean">كلمة المرور</span>
+      <div class="mt-1 relative"><i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="password" :type="show?'text':'password'" required autocomplete="current-password" class="w-full h-14 rounded-2xl bg-white border border-slate-200 pr-12 pl-12 text-base focus:outline-none focus:ring-2 focus:ring-leaf">
+      <button type="button" @click="show=!show" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><i class="fa-regular" :class="show?'fa-eye-slash':'fa-eye'"></i></button></div></label>
+    <button class="w-full h-14 rounded-2xl bg-leaf text-white font-extrabold text-lg shadow-lg active:scale-95 transition">تسجيل الدخول</button>
+  </form>
+  <p class="text-center text-sm mt-6">ليس لديك حساب؟ <a class="text-leaf font-extrabold" href="{{ url_for('signup') }}">إنشاء حساب</a></p>
+</div>
+{% endblock %}

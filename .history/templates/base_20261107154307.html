@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B4F6C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icon-192.png') }}">
+<title>{% block title %}AquaSmart DZ{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Cairo','sans-serif']},colors:{ocean:'#0B4F6C',leaf:'#2E8B57',mint:'#88D498',app:'#F4F7F6'}}}}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+  [x-cloak]{display:none!important}
+  .no-scrollbar{scrollbar-width:none}.no-scrollbar::-webkit-scrollbar{display:none}
+  html{-webkit-tap-highlight-color:transparent}
+  body{overscroll-behavior-y:none}
+  .pb-safe{padding-bottom:env(safe-area-inset-bottom)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body class="bg-[#DCE6E3] font-sans text-slate-800">
+
+<!-- شاشة البداية: تظهر مرة واحدة في كل جلسة لمدة 2.5 ثانية ثم تتلاشى -->
+<div x-data="{show:!sessionStorage.getItem('splash')}" x-cloak x-show="show"
+     x-init="if(show){setTimeout(()=>{show=false;sessionStorage.setItem('splash','1')},2500)}"
+     x-transition:leave="transition ease-in duration-700" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-[100] bg-ocean flex flex-col items-center justify-center text-white">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/logo.svg') }}'"
+       class="w-40 h-40 rounded-full bg-white p-2 shadow-2xl" alt="AquaSmart DZ">
+  <h1 class="mt-6 text-3xl font-extrabold tracking-wide">AquaSmart DZ</h1>
+  <p class="mt-1 text-mint text-sm">الأكوابونيك المستدام من أجل غذاء المستقبل</p>
+  <div class="mt-8 h-8 w-8 rounded-full border-4 border-white/30 border-t-mint" style="animation:spin 1s linear infinite"></div>
+</div>
+
+<!-- حاوية التطبيق (480px كحد أقصى) -->
+<div class="relative max-w-[480px] mx-auto min-h-screen bg-app shadow-2xl">
+  <header class="sticky top-0 z-30 bg-ocean text-white px-4 h-14 flex items-center justify-between rounded-b-3xl shadow-md">
+    <div class="flex items-center gap-2">
+      {% block back %}{% endblock %}
+      <h1 class="font-extrabold text-lg">{% block page_title %}AquaSmart DZ{% endblock %}</h1>
+    </div>
+    <a href="{{ url_for('cart') }}" class="relative h-9 w-9 grid place-items-center rounded-full bg-white/15 active:scale-90 transition">
+      <i class="fa-solid fa-cart-shopping text-sm"></i>
+      {% if cart_count %}<span class="absolute -top-1 -left-1 bg-mint text-ocean text-[10px] font-bold rounded-full h-4 min-w-4 px-1 grid place-items-center">{{ cart_count }}</span>{% endif %}
+    </a>
+  </header>
+
+  {% set msgs = get_flashed_messages(with_categories=true) %}
+  {% if msgs %}
+  <div x-data="{o:true}" x-init="setTimeout(()=>o=false,3000)" x-show="o" x-transition class="fixed top-16 inset-x-0 mx-auto max-w-[480px] z-50 px-4 space-y-2">
+    {% for cat,m in msgs %}<div class="rounded-2xl px-4 py-3 text-sm font-bold shadow-lg {{ 'bg-red-500 text-white' if cat=='error' else 'bg-leaf text-white' }}">{{ m }}</div>{% endfor %}
+  </div>{% endif %}
+
+  <main class="px-4 pt-5 pb-28">{% block content %}{% endblock %}</main>
+
+  <!-- شريط التنقل السفلي -->
+  <nav class="fixed bottom-0 inset-x-0 mx-auto max-w-[480px] z-40 bg-white rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,.08)] pb-safe">
+    <div class="grid grid-cols-4 h-16">
+      {% set ep = request.endpoint or '' %}
+      {% for e, group, icon, label in [
+        ('index', ['index'], 'fa-house', 'الرئيسية'),
+        ('products', ['products','cart'], 'fa-basket-shopping', 'المنتجات'),
+        ('courses', ['courses'], 'fa-graduation-cap', 'الدورات'),
+        ('account', ['account','login','register'] + (['admin_dashboard','admin_list','admin_form','admin_users','admin_orders'] if true else []), 'fa-user', 'حسابي')] %}
+      <a href="{{ url_for(e) }}" class="flex flex-col items-center justify-center gap-0.5 text-xs font-bold transition {{ 'text-leaf' if ep in group else 'text-slate-400' }}">
+        <span class="h-8 w-12 grid place-items-center rounded-full {{ 'bg-mint/40' if ep in group }}"><i class="fa-solid {{ icon }} text-lg"></i></span>{{ label }}
+      </a>{% endfor %}
+    </div>
+  </nav>
+</div>
+<script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'))}</script>
+</body></html>

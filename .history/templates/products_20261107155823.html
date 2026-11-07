@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}المنتجات{% endblock %}{% block page_title %}المنتجات{% endblock %}
+{% block content %}
+<div class="grid grid-cols-2 gap-3">
+{% for p in products %}
+  <div class="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col">
+    <img src="{{ p.image_url }}" class="h-28 w-full object-cover" alt="">
+    <div class="p-3 flex-1 flex flex-col">
+      <h3 class="font-extrabold text-sm leading-tight">{{ p.name }}</h3>
+      <p class="text-[11px] text-slate-500 mt-1 flex-1 line-clamp-2">{{ p.description }}</p>
+      <div class="flex items-center justify-between mt-2"><span class="font-extrabold text-ocean text-sm">{{ '%g' % p.price }} د.ج</span>
+      <form method="post" action="{{ url_for('cart_add', kind='p', item_id=p.id) }}"><button class="h-9 px-3 rounded-full bg-leaf text-white text-xs font-bold shadow active:scale-90 transition"><i class="fa-solid fa-cart-plus ml-1"></i>أضف</button></form></div>
+    </div>
+  </div>
+{% else %}<p class="col-span-2 text-center text-slate-500">لا توجد منتجات.</p>{% endfor %}
+</div>{% endblock %}

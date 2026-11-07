@@ -1,0 +1,13 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<h2 class="font-extrabold text-ocean mb-3"><i class="fa-solid fa-users ml-2"></i>المستخدمون ({{ users|length }})</h2>
+<div class="space-y-3">{% for u in users %}<div class="bg-white rounded-2xl p-3 shadow-sm">
+  <div class="flex items-center gap-3">
+    <div class="h-11 w-11 rounded-full bg-gradient-to-br from-ocean to-leaf text-white grid place-items-center font-extrabold">{{ u.name[0] }}</div>
+    <div class="flex-1 min-w-0"><p class="font-extrabold text-sm">{{ u.name }}</p><p class="text-xs text-slate-500 truncate">{{ u.email }}</p></div>
+    <span class="text-xs font-bold px-3 py-1 rounded-full {{ 'bg-ocean text-white' if u.is_admin else 'bg-slate-100 text-slate-500' }}">{{ 'مدير' if u.is_admin else 'مستخدم' }}</span></div>
+  {% if u.id != current_user.id %}
+  <div class="flex gap-2 mt-3">
+    <form method="post" action="{{ url_for('admin_user_toggle', uid=u.id) }}" class="flex-1"><button class="w-full py-2 rounded-xl bg-mint/40 text-ocean text-sm font-bold">{{ 'إزالة صلاحية المدير' if u.is_admin else 'جعله مديراً' }}</button></form>
+    <form method="post" action="{{ url_for('admin_user_delete', uid=u.id) }}" onsubmit="return confirm('سيتم حذف المستخدم وكل طلباته. متأكد؟')"><button class="px-4 py-2 rounded-xl bg-red-50 text-red-600 text-sm font-bold"><i class="fa-solid fa-trash ml-1"></i>حذف</button></form>
+  </div>{% endif %}
+</div>{% endfor %}</div>{% endblock %}

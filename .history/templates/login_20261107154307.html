@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% from '_input.html' import field %}{% block title %}تسجيل الدخول{% endblock %}{% block page_title %}تسجيل الدخول{% endblock %}
+{% block content %}<div class="text-center mb-6"><img src="{{ url_for('static', filename='images/logo.svg') }}" class="h-24 w-24 mx-auto" alt=""></div>
+<form method="post">{{ field('email','البريد الإلكتروني','email') }}{{ field('password','كلمة المرور','password') }}
+<button class="w-full h-14 rounded-2xl bg-leaf text-white font-extrabold text-lg shadow active:scale-95 transition">دخول</button></form>
+<p class="text-center text-sm mt-5">ليس لديك حساب؟ <a class="text-leaf font-extrabold" href="{{ url_for('register') }}">إنشاء حساب</a></p>{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'admin_base.html' %}{% block admin %}
+<h2 class="font-extrabold text-ocean mb-3"><i class="fa-solid fa-basket-shopping ml-2"></i>الطلبات</h2>
+<div class="space-y-3">{% for o in orders %}<div class="bg-white rounded-2xl p-4 shadow-sm text-sm">
+<div class="flex justify-between font-extrabold"><span>#{{ o.id }} — {{ o.user.name }}</span><span class="text-ocean">{{ '%g' % o.total }} د.ج</span></div>
+<p class="text-xs text-slate-500 mt-1">{{ o.items }}</p><p class="text-xs mt-1"><i class="fa-solid fa-phone ml-1 text-leaf"></i>{{ o.phone }} • {{ o.address }}</p>
+<form method="post" action="{{ url_for('admin_order_status', oid=o.id) }}" class="flex gap-2 mt-3">
+<select name="status" class="flex-1 h-11 rounded-xl border border-slate-200 bg-white px-2">{% for s in statuses %}<option {{ 'selected' if s==o.status }}>{{ s }}</option>{% endfor %}</select>
+<button class="px-5 rounded-xl bg-leaf text-white font-bold">حفظ</button></form></div>
+{% else %}<p class="text-sm text-slate-500">لا توجد طلبات.</p>{% endfor %}</div>{% endblock %}

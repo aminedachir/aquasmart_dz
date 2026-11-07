@@ -1,0 +1,58 @@
+{% extends 'base.html' %}{% block title %}إنشاء حساب{% endblock %}
+{% block content %}
+<div class="min-h-[88vh] flex flex-col justify-center py-6">
+  <div class="text-center mb-6">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/logo.svg') }}'" class="h-28 w-28 mx-auto rounded-full shadow-lg bg-white p-1 object-contain" alt="">
+    <h1 class="text-2xl font-extrabold text-ocean mt-4">إنشاء حساب جديد 🌱</h1>
+    <p class="text-sm text-slate-500">انضم إلى مجتمع الأكوابونيك المستدام</p>
+  </div>
+  
+  <form method="post" class="space-y-3" x-data="{show:false}">
+    
+    <!-- الاسم واللقب -->
+    <label class="block"><span class="text-sm font-bold text-ocean">الاسم واللقب</span>
+      <div class="mt-1 relative"><i class="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="full_name" required autocomplete="name" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-4 text-base focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+
+    <!-- رقم الهاتف -->
+    <label class="block"><span class="text-sm font-bold text-ocean">رقم الهاتف</span>
+      <div class="mt-1 relative"><i class="fa-solid fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="phone" type="tel" required autocomplete="tel" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-4 text-base focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+
+    <!-- البريد الإلكتروني -->
+    <label class="block"><span class="text-sm font-bold text-ocean">البريد الإلكتروني</span>
+      <div class="mt-1 relative"><i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="email" type="email" required autocomplete="email" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-4 text-base focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+
+    <!-- كلمة المرور -->
+    <label class="block"><span class="text-sm font-bold text-ocean">كلمة المرور</span>
+      <div class="mt-1 relative"><i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="password" :type="show?'text':'password'" minlength="6" required autocomplete="new-password" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-12 text-base focus:outline-none focus:ring-2 focus:ring-leaf">
+      <button type="button" @click="show=!show" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><i class="fa-regular" :class="show?'fa-eye-slash':'fa-eye'"></i></button></div></label>
+
+    <!-- تأكيد كلمة المرور -->
+    <label class="block"><span class="text-sm font-bold text-ocean">تأكيد كلمة المرور</span>
+      <div class="mt-1 relative"><i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="confirm_password" :type="show?'text':'password'" minlength="6" required autocomplete="new-password" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-4 text-base focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+
+    <!-- الموقع الجغرافي -->
+    <label class="block"><span class="text-sm font-bold text-ocean">الموقع الجغرافي (اختياري)</span>
+      <div class="mt-1 relative"><i class="fa-solid fa-location-dot absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input name="location" placeholder="مثال: قرب المستشفى" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-4 text-base focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+
+    <!-- الولاية والبلدية -->
+    <div class="grid grid-cols-2 gap-3">
+      <label class="block"><span class="text-sm font-bold text-ocean">الولاية</span>
+        <div class="mt-1 relative"><i class="fa-solid fa-map absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input name="wilaya" required placeholder="مثال: الجزائر" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-2 text-sm focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+      
+      <label class="block"><span class="text-sm font-bold text-ocean">البلدية</span>
+        <div class="mt-1 relative"><i class="fa-solid fa-city absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input name="baladiya" required placeholder="مثال: بئر مراد رايس" class="w-full h-12 rounded-2xl bg-white border border-slate-200 pr-12 pl-2 text-sm focus:outline-none focus:ring-2 focus:ring-leaf"></div></label>
+    </div>
+
+    <button class="w-full h-14 rounded-2xl bg-leaf text-white font-extrabold text-lg shadow-lg active:scale-95 transition mt-4">إنشاء الحساب</button>
+  </form>
+  <p class="text-center text-sm mt-6">لديك حساب؟ <a class="text-leaf font-extrabold" href="{{ url_for('login') }}">تسجيل الدخول</a></p>
+</div>
+{% endblock %}
