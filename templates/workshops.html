@@ -37,6 +37,7 @@
   <div class="p-4">
     <h3 class="font-extrabold text-ocean">{{ w.title }}</h3>
     <p class="text-sm text-slate-500 mt-1">{{ w.description }}</p>
+    <span class="inline-flex items-center gap-1.5 mt-3 rounded-full bg-mint/30 text-leaf px-3 py-1 text-xs font-extrabold"><i class="fa-solid fa-award"></i>شهادة مشاركة عند إتمام الدورة</span>
     <div class="flex items-center justify-between mt-3">
       <div class="text-xs text-slate-500"><i class="fa-regular fa-calendar ml-1"></i>{{ w.date.strftime('%Y-%m-%d') if w.date }}<br><b class="text-ocean text-base">{{ '%g' % w.price }} د.ج</b></div>
       {% if 'w:%d'|format(w.id) in in_cart %}<a href="{{ url_for('cart') }}" class="px-5 py-2.5 rounded-2xl bg-mint/40 text-leaf font-bold text-sm"><i class="fa-solid fa-check ml-1"></i>في السلة</a>

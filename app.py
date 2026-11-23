@@ -29,6 +29,8 @@ elif database_url.startswith("postgresql://"):
     database_url = database_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True, "pool_recycle": 300}
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 60 * 60 * 24 * 30  # تخزين الصور وملفات static شهراً في المتصفح
 
 # إعدادات رفع الملفات
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
@@ -466,13 +468,20 @@ def admin_order_delete(oid):
 
 
 # ==========================================
-# 6. بيانات تجريبية
+# 6. بيانات أولية (تُضاف تلقائياً عند تشغيل التطبيق)
 # ==========================================
-def seed():
+def catalog_img(name, text, color):
+    """صورة المنتج من static/images/products/ (اسم الملف بدون امتداد: jpg/jpeg/png/webp)، وإلا صورة بديلة."""
+    for ext in ("jpg", "jpeg", "png", "webp", "JPG", "JPEG", "PNG"):
+        filename = f"{name}.{ext}"
+        if os.path.exists(os.path.join(app.root_path, "static", "images", "products", filename)):
+            return f"/static/images/products/{filename}"
+    return f"https://placehold.co/600x400/{color}/ffffff?text={text}"
+
+
+def seed_users():
     if User.query.first():
         return
-    img = lambda t, c: f"https://placehold.co/600x400/{c}/ffffff?text={t}"
-    today = date.today()
     db.session.add_all([
         User(full_name="المدير", phone="0550000000", email="admin@aquasmart.dz", is_admin=True,
              location="الجزائر العاصمة", wilaya="الجزائر", baladiya="باب الوادي",
@@ -480,21 +489,78 @@ def seed():
         User(full_name="مستخدم تجريبي", phone="0661111111", email="demo@aquasmart.dz",
              location="وهران", wilaya="وهران", baladiya="بئر الجير",
              password_hash=generate_password_hash("demo123")),
-        Product(name="خس عضوي طازج", description="خس مزروع بمغذيات طبيعية.", price=150, image_url=img("Lettuce", "2E8B57")),
-        Product(name="طماطم عنقودية", description="طماطم طازجة بدون مبيدات.", price=220, image_url=img("Tomato", "C0392B")),
-        Product(name="نعناع طازج", description="حزمة نعناع عطرية.", price=80, image_url=img("Mint", "88D498")),
-        Product(name="سمك البلطي", description="سمك بلطي مُربّى في مياه نظيفة (للكيلوغرام).", price=900, image_url=img("Tilapia", "0B4F6C")),
-        Product(name="زريعة البلطي", description="زريعة صحية لبدء مشروعك (للعشرة).", price=600, image_url=img("Fingerlings", "0B4F6C")),
-        Product(name="نظام أكوابونيك منزلي", description="نظام صغير متكامل للمنزل.", price=45000, image_url=img("Aquaponics", "2E8B57")),
-        Workshop(title="أساسيات الأكوابونيك", description="دورة النيتروجين وتصميم النظام وإدارته.", price=6000, date=today + timedelta(days=10), image_url=img("Basics", "0B4F6C")),
-        Workshop(title="تربية الأسماك بمياه نظيفة", description="جودة المياه والتغذية والصحة السمكية.", price=7500, date=today + timedelta(days=24), image_url=img("Fish", "2E8B57")),
-        Workshop(title="مشروع أكوابونيك تجاري", description="دراسة الجدوى والتكاليف والتسويق في الجزائر.", price=12000, date=today + timedelta(days=40), image_url=img("Business", "88D498")),
     ])
     db.session.commit()
 
-with app.app_context():
-    db.create_all()
-    seed()
+
+def seed_catalog():
+    """يضيف المنتجات والدورة إن لم تكن موجودة (آمن عند كل تشغيل، لا يكرر ولا يمسح شيئاً)."""
+    products = [
+        dict(name="البلطي الأحمر",
+             description="Tilapia rouge - سمك البلطي الأحمر طازج من نظام الأكوابونيك. السعر: 600 دج للكيلوغرام (600DA par kg).",
+             price=600, image=catalog_img("tilapia", "Tilapia+rouge", "0B4F6C")),
+        dict(name="خس باتافيا",
+             description="Laitue batavia - خس طازج بدون مبيدات. السعر: 100 دج للرأس الواحد (100 DA par tête de laitue).",
+             price=100, image=catalog_img("laitue", "Laitue", "2E8B57")),
+        dict(name="الطماطم الكرزية",
+             description="Tomate cerise - طماطم كرزية طازجة بدون مبيدات. السعر: 200 دج للعلبة (200 DA pour boîte).",
+             price=200, image=catalog_img("tomate-cerise", "Tomate+cerise", "C0392B")),
+    ]
+    for p in products:
+        item = Product.query.filter_by(name=p["name"]).first()
+        if not item:
+            db.session.add(Product(name=p["name"], description=p["description"],
+                                   price=p["price"], image_url=p["image"]))
+        elif p["image"].startswith("/static/") and item.image_url != p["image"] \
+                and (not item.image_url or "placehold.co" in item.image_url):
+            item.image_url = p["image"]  # استبدال الصورة البديلة بالصورة المحلية
+
+    workshop_title = "التكوين في نظام الأكوابونيك"
+    existing = Workshop.query.filter_by(title=workshop_title).first()
+    ws_img = catalog_img("formation", "Formation+aquaponie", "0B4F6C")
+    if existing and ws_img.startswith("/static/") and (not existing.image_url or "placehold.co" in existing.image_url):
+        existing.image_url = ws_img
+    if existing:
+        # إزالة جملة الشهادة من الوصف في قاعدة بيانات موجودة (تُعرض كشارة في القالب)
+        existing.description = (existing.description or "").replace(" تُمنح شهادة مشاركة عند إتمام الدورة.", "").replace("تُمنح شهادة مشاركة عند إتمام الدورة.", "").strip()
+    else:
+        db.session.add(Workshop(
+            title=workshop_title,
+            description=(
+                "Formation en aquaponie - تعلّم أساسيات تربية الأسماك وإنتاج الخضروات بدون تربة. "
+                "تكوين تطبيقي لتعريف نظام الأكوابونيك وتعلّم أساسياته، وكيفية الجمع بين تربية الأسماك "
+                "مثل البلطي وزراعة النباتات في نظام إنتاج متكامل ومستدام. "
+                "مكان التكوين: ولاية تلمسان. "
+                "سعر التكوين: 15000 دج."),
+            price=15000,
+            date=date.today() + timedelta(days=30),  # عدّل التاريخ من لوحة الإدارة
+            image_url=catalog_img("formation", "Formation+aquaponie", "0B4F6C")))
+    db.session.commit()
+
+
+def remove_demo_items():
+    """يحذف منتجات وورشات العينة القديمة فقط (بالاسم)، ولا يمس ما تضيفه أنت من لوحة الإدارة."""
+    demo_products = ["خس عضوي طازج", "طماطم عنقودية", "نعناع طازج", "سمك البلطي",
+                     "زريعة البلطي", "نظام أكوابونيك منزلي"]
+    demo_workshops = ["أساسيات الأكوابونيك", "تربية الأسماك بمياه نظيفة", "مشروع أكوابونيك تجاري"]
+    for item in Product.query.filter(Product.name.in_(demo_products)).all():
+        # نحافظ على سجل الطلبات القديمة (اسم العنصر محفوظ في OrderItem.name)
+        OrderItem.query.filter_by(product_id=item.id).update({"product_id": None})
+        db.session.delete(item)
+    for item in Workshop.query.filter(Workshop.title.in_(demo_workshops)).all():
+        OrderItem.query.filter_by(workshop_id=item.id).update({"workshop_id": None})
+        db.session.delete(item)
+    db.session.commit()
+
+
+# على Vercel كل "بدء بارد" يعيد تنفيذ هذا الكود ويرسل عدة استعلامات لقاعدة البيانات = بطء.
+# بعد أول نشر ناجح أضف المتغير SKIP_SEED=1 في إعدادات Vercel لتخطّيه.
+if os.environ.get("SKIP_SEED") != "1":
+    with app.app_context():
+        db.create_all()
+        seed_users()
+        seed_catalog()
+        remove_demo_items()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -52,6 +52,7 @@
     </div>
     <div class="p-4">
       <h3 class="font-extrabold text-sm truncate text-ocean">{{ w.title }}</h3>
+      <span class="inline-flex items-center gap-1 mt-2 rounded-full bg-mint/30 text-leaf px-2.5 py-0.5 text-[10px] font-extrabold"><i class="fa-solid fa-award"></i>شهادة مشاركة عند إتمام الدورة</span>
       <div class="flex items-center justify-between mt-3">
         <span class="font-black text-leaf text-sm">{{ '%g' % w.price }} <span class="text-[10px]">د.ج</span></span>
         <form method="post" action="{{ url_for('cart_add', kind='w', item_id=w.id) }}">

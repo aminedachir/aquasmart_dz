@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B4F6C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icon-192.png') }}">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Cairo','sans-serif']},colors:{ocean:'#0B4F6C',leaf:'#2E8B57',mint:'#88D498',app:'#F4F7F6'}}}}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+  [x-cloak]{display:none!important}
+  html{-webkit-tap-highlight-color:transparent}
+  body{overscroll-behavior-y:none}
+  @keyframes pop{from{opacity:0;transform:scale(.85) translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .a-pop{animation:pop .8s ease-out both}
+  .a-rise{animation:rise .7s ease-out .5s both}
+  .a-rise2{animation:rise .7s ease-out .7s both}
+  .a-rise3{animation:rise .7s ease-out .9s both}
+  .glass{background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.28)}
+  .pb-safe{padding-bottom:max(1.5rem,env(safe-area-inset-bottom))}
+  .pt-safe{padding-top:max(2rem,env(safe-area-inset-top))}
+  @media (prefers-reduced-motion:reduce){.a-pop,.a-rise,.a-rise2,.a-rise3{animation:none}}
+</style>
+<title>AquaSmart DZ</title>
+</head>
+<body class="bg-[#06303f] font-sans text-white">
+
+<!-- الشاشة الافتتاحية -->
+<main id="splash" class="relative w-full max-w-[480px] mx-auto min-h-[100dvh] overflow-hidden flex flex-col transition-opacity duration-500"
+      style="background:#06303f url('{{ url_for('static', filename='images/hero.jpg') }}') 50% 60%/cover no-repeat">
+
+  <!-- تدرّج خفيف: الصورة تظهر أكثر في الوسط، والتعتيم فقط خلف النصوص -->
+  <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,52,72,.92) 0%,rgba(7,72,94,.55) 24%,rgba(7,72,94,0) 42%,rgba(4,44,36,0) 55%,rgba(3,46,34,.55) 74%,rgba(3,46,34,.95) 100%)"></div>
+
+  <!-- الأعلى: الشعار + الاسم + الشعارات النصية -->
+  <header class="relative z-10 flex flex-col items-center text-center px-5 pt-safe a-pop">
+    <span class="glass rounded-full px-4 py-1.5 text-xs sm:text-sm font-bold">من الجزائر لأجل غد أفضل</span>
+
+    <img src="{{ url_for('static', filename='images/logo.png') }}"
+         onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/logo.svg') }}'"
+         class="mt-4 h-28 w-28 sm:h-32 sm:w-32 drop-shadow-[0_6px_14px_rgba(0,0,0,.35)]" alt="AquaSmart DZ">
+
+    <h1 dir="ltr" class="mt-2 text-[clamp(2.1rem,10vw,2.9rem)] font-extrabold leading-none tracking-tight">AquaSmart <span class="text-[#38A5E6]">DZ</span></h1>
+
+    <p dir="ltr" class="mt-3 text-[15px] sm:text-base font-semibold" style="text-shadow:0 2px 8px rgba(0,0,0,.6)">Aquaponie : innovation &amp; production durable</p>
+    <p class="mt-1 text-sm font-bold text-white/90" style="text-shadow:0 2px 8px rgba(0,0,0,.6)">أكوابونيك ذكي... غذاء مستدام لمستقبل أفضل</p>
+  </header>
+
+  <!-- المساحة الفارغة تُظهر الصورة -->
+  <div class="flex-1 min-h-[22vh]"></div>
+
+  <!-- الميزات -->
+  <section class="relative z-10 px-5 a-rise3" aria-label="الميزات">
+    <div class="grid grid-cols-3 gap-2.5 text-center text-[12.5px] sm:text-[13px] font-bold">
+      <div class="glass rounded-2xl px-2 py-3 flex flex-col items-center gap-2 shadow-lg">
+        <span class="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-fish text-[#7CC7F5] text-lg"></i></span>
+        <span class="leading-snug">إنتاج سمك<br>بلطي أحمر</span>
+      </div>
+      <div class="glass rounded-2xl px-2 py-3 flex flex-col items-center gap-2 shadow-lg">
+        <span class="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-seedling text-[#88D498] text-lg"></i></span>
+        <span class="leading-snug">إنتاج خضروات<br>وحماية البيئة</span>
+      </div>
+      <div class="glass rounded-2xl px-2 py-3 flex flex-col items-center gap-2 shadow-lg">
+        <span class="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center"><i class="fa-solid fa-droplet text-[#7CC7F5] text-lg"></i></span>
+        <span class="leading-snug">توفير<br>المياه</span>
+      </div>
+    </div>
+
+    <p dir="ltr" class="mt-4 text-center text-[13px] sm:text-sm italic font-semibold text-white/95" style="text-shadow:0 2px 8px rgba(0,0,0,.6)">
+      Ensemble pour une agriculture durable sans pesticides
+    </p>
+  </section>
+
+  <!-- الأزرار -->
+  <div class="relative z-10 px-5 pt-5 pb-safe">
+    {% if logged %}
+      <div class="flex flex-col items-center gap-3 pb-4 a-rise">
+        <div class="h-9 w-9 rounded-full border-4 border-white/30 border-t-[#88D498]" style="animation:spin 1s linear infinite"></div>
+        <span class="text-sm font-bold opacity-90">أهلاً بعودتك…</span>
+      </div>
+    {% else %}
+      <a href="{{ url_for('login') }}" class="a-rise block h-14 leading-[3.5rem] rounded-2xl bg-gradient-to-l from-[#2E9B48] to-[#3DB45B] text-center text-lg font-extrabold shadow-xl shadow-black/30 active:scale-95 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">تسجيل الدخول</a>
+      <a href="{{ url_for('signup') }}" class="a-rise2 mt-3 block h-14 leading-[3.5rem] rounded-2xl bg-white text-[#0B4F6C] text-center text-lg font-extrabold shadow-xl shadow-black/30 active:scale-95 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">إنشاء حساب جديد</a>
+    {% endif %}
+    <div class="mt-5 flex items-center justify-center gap-5 text-base font-bold">
+      <span>العربية</span><span class="h-5 w-px bg-white/50"></span>
+      <button type="button" onclick="soon()" class="opacity-90">Français</button>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-24 inset-x-0 mx-auto w-fit max-w-[90%] z-20 rounded-full bg-black/70 px-5 py-2 text-sm font-bold opacity-0 transition-opacity">النسخة الفرنسية قريباً</div>
+</main>
+
+<script>
+  function soon(){var t=document.getElementById('toast');t.style.opacity=1;setTimeout(function(){t.style.opacity=0},2000)}
+  {% if auto %}
+  // بعد 2.5 ثانية: تلاشٍ ثم انتقال (المسجّل ← /home، والزائر ← /login إن فُعّل الخيار)
+  setTimeout(function(){
+    document.getElementById('splash').style.opacity=0;
+    setTimeout(function(){location.replace("{{ target }}")},400);
+  },2500);
+  {% endif %}
+</script>
+</body>
+</html>
