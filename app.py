@@ -344,6 +344,11 @@ def admin_dashboard():
     return render_template("admin_dashboard.html", stats=stats, pending=pending,
         latest=Order.query.order_by(Order.created_at.desc()).limit(5).all())
 
+@app.route("/admin/aquarium")
+@admin_required
+def admin_aquarium():
+    return render_template("admin_aquarium.html")
+
 @app.route("/admin/users")
 @admin_required
 def admin_users():

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* بديل خفيف لـ animate.css (نفس أسماء الأصناف المستعملة في القوالب) */
 @keyframes fi{from{opacity:0}to{opacity:1}}
 @keyframes fid{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
 @keyframes fiu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}

@@ -61,7 +61,7 @@
         ('products', ['products'], 'fa-basket-shopping', 'المنتجات'),
         ('workshops', ['workshops'], 'fa-graduation-cap', 'الدورات'),
         ('cart', ['cart'], 'fa-cart-shopping', 'السلة'),
-        ('profile', ['profile','admin_dashboard','admin_crud','admin_users','admin_orders'], 'fa-user', 'حسابي')] %}
+        ('profile', ['profile','admin_dashboard','admin_crud','admin_users','admin_orders','admin_aquarium'], 'fa-user', 'حسابي')] %}
       <a href="{{ url_for(e) }}" class="flex flex-col items-center justify-center gap-1 text-[10px] font-extrabold transition-all duration-300 {{ 'text-leaf' if ep in group else 'text-slate-400 hover:text-slate-600' }}">
         <span class="relative h-9 w-12 grid place-items-center rounded-2xl {{ 'bg-leaf/10 text-leaf' if ep in group }} transition-all duration-300">
           <i class="fa-solid {{ icon }} text-xl"></i>

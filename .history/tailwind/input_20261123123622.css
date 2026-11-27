@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes fid{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes fiu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pls{50%{transform:scale(1.12)}}
+.animate__animated{animation-duration:.25s;animation-fill-mode:both}
+.animate__fadeIn{animation-name:fi}
+.animate__fadeInDown{animation-name:fid}
+.animate__fadeInUp{animation-name:fiu}
+.animate__pulse{animation-name:pls;animation-duration:1.5s}
+.animate__infinite{animation-iteration-count:infinite}
+@media (prefers-reduced-motion:reduce){.animate__animated{animation:none!important}}
